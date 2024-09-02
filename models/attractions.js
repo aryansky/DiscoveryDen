@@ -6,6 +6,9 @@ const attractionSchema = new Schema({
     type: String,
     required: false,
   },
+  image: {
+    type: String,
+  },
   description: {
     type: String,
     default: ".....",

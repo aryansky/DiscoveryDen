@@ -1,44 +1,60 @@
-<%- include("../partials/header") %>
+<%- layout("layouts/boilerplate") %>
 
-<h1>Edit spot:</h1>
+<div class="row">
+  <h1 class="text-center">Edit spot:</h1>
 
-<form method="POST" action="/attractions/<%= site._id %>?_method=PUT">
-  <div>
-    <label for="newSiteName">Name: </label>
-    <input
-      type="text"
-      id="newSiteName"
-      name="newSite[name]"
-      placeholder="Enter Site Name"
-      value="<%= site.name %>"
-    />
-  </div>
-  <div>
-    <label for="newSiteDescription">Description: </label>
-    <br />
-    <textarea
-      name="newSite[description]"
-      id="newSiteDescription"
-      placeholder="Enter details about the site here"
-      cols="40"
-      rows="3"
-    >
+  <div class="col-6 offset-3">
+    <form method="POST" action="/attractions/<%= site._id %>?_method=PUT">
+      <div class="mb-3">
+        <label for="newSiteName" class="form-label">Name</label>
+        <input
+          type="text"
+          id="newSiteName"
+          name="newSite[name]"
+          placeholder="Enter Site Name"
+          class="form-control"
+          value="<%= site.name %>"
+        />
+      </div>
+      <div class="mb-3">
+        <label for="newSiteDescription" class="form-label">Description</label>
+        <br />
+        <textarea
+          name="newSite[description]"
+          id="newSiteDescription"
+          placeholder="Enter details about the site here"
+          class="form-control"
+          rows="4"
+        >
 <%= site.description %></textarea
-    >
+        >
+      </div>
+      <div class="mb-3">
+        <label for="newSiteLocation" class="form-label">City</label>
+        <input
+          type="text"
+          id="newSiteLocation"
+          name="newSite[location]"
+          placeholder="eg. Mumbai"
+          class="form-control"
+          value="<%= site.location %>"
+        />
+      </div>
+      <div class="mb-3">
+        <label for="newSiteImage" class="form-label">Image Url</label>
+        <input
+          type="text"
+          id="newSiteImage"
+          name="newSite[image]"
+          placeholder="eg. https://cdn.pixabay.com/photo/2024/05/26/10/15/bird-8788491_1280.jpg"
+          class="form-control"
+          value="<%= site.image %>"
+        />
+      </div>
+      <div class="mb-3">
+        <button class="btn btn-info">Update</button>
+      </div>
+    </form>
+    <a href="/attractions/<%= site._id %>">Cancel</a>
   </div>
-  <div>
-    <label for="newSiteLocation">City: </label>
-    <input
-      type="text"
-      id="newSiteLocation"
-      name="newSite[location]"
-      placeholder="eg. Mumbai"
-      value="<%= site.location %>"
-    />
-  </div>
-  <button>Submit</button>
-</form>
-
-<a href="/attractions/<%= site._id %>">Cancel</a>
-
-<%- include("../partials/footer") %>
+</div>

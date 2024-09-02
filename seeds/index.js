@@ -18,6 +18,9 @@ const seedDB = async () => {
     const location = new Attraction({
       location: indianCities[rndm].name,
       name: `${sample(descriptors)} ${sample(places)}`,
+      image: "https://picsum.photos/700/400",
+      description:
+        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Porro eaque dolor praesentium, tempora facere enim sapiente, vero blanditiis voluptatum aperiam excepturi debitis vitae veritatis perferendis, illum minima rerum placeat fuga.",
     });
     await location.save();
   }

@@ -1,0 +1,19 @@
+<%- include("../partials/header") %>
+
+<h1>Details about <%= site.name %></h1>
+
+<ul>
+  <li>Description: <%= site.description %></li>
+  <li>Location: <%= site.location %></li>
+</ul>
+
+<a href="/attractions">All Attractions</a>
+<p>
+  <a href="/attractions/<%= site._id %>/edit">Edit Spot</a>
+</p>
+
+<form action="/attractions/<%= site._id %>?_method=DELETE" method="POST">
+  <button>DELETE</button>
+</form>
+
+<%- include("../partials/footer") %>

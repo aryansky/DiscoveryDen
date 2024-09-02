@@ -1,0 +1,16 @@
+<%- include("../partials/header") %>
+
+<h1>Welcome!</h1>
+
+<div><a href="/attractions/new">Create new site</a></div>
+
+<ul>
+  <% for (let site of attractions) { %>
+  <li>
+    <a href="/attractions/<%= site._id %>"><%= site.name %></a> -
+    <b><%= site.location %></b>
+  </li>
+  <% } %>
+</ul>
+
+<%- include("../partials/footer") %>

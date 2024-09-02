@@ -1,0 +1,40 @@
+<%- include("../partials/header") %>
+
+<h1>New spot:</h1>
+
+<form method="POST" action="/attractions">
+  <div>
+    <label for="newSiteName">Name: </label>
+    <input
+      type="text"
+      id="newSiteName"
+      name="newSite[name]"
+      placeholder="Enter Site Name"
+    />
+  </div>
+  <div>
+    <label for="newSiteDescription">Description: </label>
+    <br />
+    <textarea
+      name="newSite[description]"
+      id="newSiteDescription"
+      placeholder="Enter details about the site here"
+      cols="40"
+      rows="3"
+    ></textarea>
+  </div>
+  <div>
+    <label for="newSiteLocation">City: </label>
+    <input
+      type="text"
+      id="newSiteLocation"
+      name="newSite[location]"
+      placeholder="eg. Mumbai"
+    />
+  </div>
+  <button>Submit</button>
+</form>
+
+<a href="/attractions">Cancel</a>
+
+<%- include("../partials/footer") %>

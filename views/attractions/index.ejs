@@ -5,14 +5,10 @@
 <% for (let site of attractions) { %>
 <div class="card mb-3">
   <div class="row">
-    <div class="col-md-4">
-      <img
-        src="https://webneel.com/daily/sites/default/files/images/daily/08-2018/1-nature-photography-spring-season-mumtazshamsee.jpg"
-        class="img-fluid"
-        alt=""
-      />
+    <div class="col-lg-4">
+      <img src="<%= site.image %>" class="img-fluid" alt="" />
     </div>
-    <div class="col-md-8">
+    <div class="col-lg-8">
       <div class="card-body">
         <h5 class="card-title"><%= site.name %></h5>
         <p class="card-text"><%= site.description %></p>

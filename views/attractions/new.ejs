@@ -4,7 +4,12 @@
   <h1 class="text-center">New spot:</h1>
 
   <div class="col-6 offset-3">
-    <form method="POST" action="/attractions">
+    <form
+      method="POST"
+      action="/attractions"
+      class="needs-validation"
+      novalidate
+    >
       <div class="mb-3">
         <label for="newSiteName" class="form-label">Name</label>
         <input
@@ -13,7 +18,9 @@
           name="newSite[name]"
           placeholder="Enter Site Name"
           class="form-control"
+          required
         />
+        <div class="valid-feedback">Looks good!</div>
       </div>
       <div class="mb-3">
         <label for="newSiteDescription" class="form-label">Description</label>
@@ -23,7 +30,9 @@
           id="newSiteDescription"
           placeholder="Enter details about the site here"
           class="form-control"
+          required
         ></textarea>
+        <div class="valid-feedback">Looks good!</div>
       </div>
       <div class="mb-3">
         <label for="newSiteLocation" class="form-label">City</label>
@@ -33,7 +42,9 @@
           name="newSite[location]"
           placeholder="eg. Mumbai"
           class="form-control"
+          required
         />
+        <div class="valid-feedback">Looks good!</div>
       </div>
       <div class="mb-3">
         <label for="newSiteImage" class="form-label">Image Url</label>

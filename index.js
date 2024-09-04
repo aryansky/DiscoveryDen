@@ -2,8 +2,11 @@ const express = require("express");
 const path = require("path");
 const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
+const { spotSchema } = require("./schemas.js");
 const mongoose = require("mongoose");
 const Attraction = require("./models/attractions");
+const catchAsync = require("./utils/catchAsync");
+const ExpressError = require("./utils/ExpressError");
 
 mongoose
   .connect("mongodb://127.0.0.1:27017/discovery-den")
@@ -19,8 +22,20 @@ app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 
+const validateSpot = function (req, res, next) {
+  const { error } = spotSchema.validate(req.body);
+  if (error) {
+    const msg = error.details.map((el) => el.message).join(",");
+    throw new ExpressError(msg, 400);
+  } else {
+    next();
+  }
+};
+
 app.get("/", (req, res) => {
-  res.send("Welcome");
+  res.send(
+    "Home page, jisko thoda sa edit kiya hai aur usme ye nayi line daali hai"
+  );
 });
 
 app.get("/attractions", async (req, res) => {
@@ -35,42 +50,76 @@ app.get("/attractions/new", (req, res) => {
   res.render("attractions/new", { pageTitle: "Create New Spot" });
 });
 
-app.get("/attractions/:id", async (req, res) => {
-  const { id } = req.params;
-  const site = await Attraction.findById(id);
-  res.render("attractions/details", {
-    site,
-    pageTitle: `Details of ${site.name}`,
-  });
+app.get(
+  "/error",
+  catchAsync(async (req, res, next) => {
+    throw new Error("WOHOOHOHOHOOOOOOOOOOOOOOOOOOOOOOOOOOOO ERRROR");
+  })
+);
+
+app.get(
+  "/attractions/:id",
+  catchAsync(async (req, res) => {
+    const { id } = req.params;
+    const site = await Attraction.findById(id);
+    res.render("attractions/details", {
+      site,
+      pageTitle: `Details of ${site.name}`,
+    });
+  })
+);
+
+app.get(
+  "/attractions/:id/edit",
+  catchAsync(async (req, res) => {
+    const { id } = req.params;
+    const site = await Attraction.findById(id);
+    res.render("attractions/edit", {
+      site,
+      pageTitle: `Edit ${site.name}`,
+    });
+  })
+);
+
+app.post(
+  "/attractions",
+  validateSpot,
+  catchAsync(async (req, res) => {
+    const { newSite } = req.body;
+    const spot = new Attraction(newSite);
+    await spot.save();
+    res.redirect(`/attractions/${spot._id}`);
+  })
+);
+
+app.put(
+  "/attractions/:id",
+  validateSpot,
+  catchAsync(async (req, res) => {
+    const { id } = req.params;
+    const { newSite } = req.body;
+    await Attraction.findByIdAndUpdate(id, newSite);
+    res.redirect(`/attractions/${id}`);
+  })
+);
+
+app.delete(
+  "/attractions/:id",
+  catchAsync(async (req, res) => {
+    const { id } = req.params;
+    await Attraction.findByIdAndDelete(id);
+    res.redirect("/attractions");
+  })
+);
+
+app.all("*", (req, res, next) => {
+  next(new ExpressError("Page Not Found", 404));
 });
 
-app.get("/attractions/:id/edit", async (req, res) => {
-  const { id } = req.params;
-  const site = await Attraction.findById(id);
-  res.render("attractions/edit", {
-    site,
-    pageTitle: `Edit ${site.name}`,
-  });
-});
-
-app.post("/attractions", async (req, res) => {
-  const { newSite } = req.body;
-  const spot = new Attraction(newSite);
-  await spot.save();
-  res.redirect(`/attractions/${spot._id}`);
-});
-
-app.put("/attractions/:id", async (req, res) => {
-  const { id } = req.params;
-  const { newSite } = req.body;
-  await Attraction.findByIdAndUpdate(id, newSite);
-  res.redirect(`/attractions/${id}`);
-});
-
-app.delete("/attractions/:id", async (req, res) => {
-  const { id } = req.params;
-  await Attraction.findByIdAndDelete(id);
-  res.redirect("/attractions");
+app.use((err, req, res, next) => {
+  const { statusCode = 500 } = err;
+  if (!err.message) err.message = "Oh no, something went wrong";
+  res.status(statusCode).render("error", { err, pageTitle: "Error Page" });
 });
 
 app.listen(3000, () => {

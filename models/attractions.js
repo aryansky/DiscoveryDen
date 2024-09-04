@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const attractionSchema = new Schema({
   name: {
     type: String,
-    required: false,
+    required: true,
   },
   image: {
     type: String,

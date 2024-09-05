@@ -1,20 +1,20 @@
 <%- layout("layouts/boilerplate") %>
 
 <div class="row">
-  <div class="col-6 offset-3">
-    <div class="card">
+  <div class="col-6">
+    <div class="card mb-3">
       <img
-        src="<%= site.image %>"
+        src="<%= attraction.image %>"
         class="card-img-top img-fluid"
         alt="..."
         style="max-width: 636px"
       />
       <div class="card-body">
-        <h5 class="card-title"><%= site.name %></h5>
-        <p class="card-text"><%= site.description %></p>
+        <h5 class="card-title"><%= attraction.name %></h5>
+        <p class="card-text"><%= attraction.description %></p>
       </div>
       <ul class="list-group list-group-flush">
-        <li class="list-group-item"><%= site.location %></li>
+        <li class="list-group-item"><%= attraction.location %></li>
         <li class="list-group-item p-0">
           <div class="container-fluid">
             <div class="row">
@@ -25,14 +25,14 @@
               </div>
               <div class="col-3 d-grid p-0">
                 <a
-                  href="/attractions/<%= site._id %>/edit"
+                  href="/attractions/<%= attraction._id %>/edit"
                   class="btn btn-warning rounded-0"
                   >Edit Spot</a
                 >
               </div>
               <div class="col-3 d-grid p-0">
                 <form
-                  action="/attractions/<%= site._id %>?_method=DELETE"
+                  action="/attractions/<%= attraction._id %>?_method=DELETE"
                   method="POST"
                   class="d-grid"
                 >
@@ -44,5 +44,48 @@
         </li>
       </ul>
     </div>
+  </div>
+  <div class="col-6">
+    <h2>Leave a review</h2>
+    <form
+      action="/attractions/<%= attraction._id %>/reviews"
+      method="POST"
+      class="needs-validation mb-3"
+      novalidate
+    >
+      <div class="mb-3">
+        <label for="rating" class="form-label">Rating</label>
+        <input
+          type="range"
+          name="newReview[rating]"
+          id="rating"
+          min="1"
+          max="5"
+          class="form-range"
+        />
+      </div>
+      <div class="mb-3">
+        <label for="body" class="form-label">Review</label>
+        <textarea
+          name="newReview[body]"
+          id="body"
+          class="form-control"
+          required
+        ></textarea>
+        <div class="valid-feedback">Looks good!</div>
+      </div>
+      <button class="btn btn-success">Add review</button>
+    </form>
+      <% for (let review of attraction.reviews) {%>
+      <div class="card mb-2">
+        <div class="card-body">
+          <h5 class="card-title d-flex justify-content-space-between">Rating: <%= review.rating %> Stars<form class="d-inline ms-auto" action="/attractions/<%= attraction._id %>/reviews/<%= review._id %>?_method=DELETE" method="POST">
+            <button class="btn btn-danger btn-sm">Delete</button>
+          </form></h5>
+          <p class="card-text"><%= review.body %></p>
+        </div>
+      </div>
+      <% } %>
+    </ul>
   </div>
 </div>

@@ -2,9 +2,10 @@ const express = require("express");
 const path = require("path");
 const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
-const { spotSchema } = require("./schemas.js");
+const { attractionSchema, reviewSchema } = require("./schemas.js");
 const mongoose = require("mongoose");
 const Attraction = require("./models/attractions");
+const Review = require("./models/reviews.js");
 const catchAsync = require("./utils/catchAsync");
 const ExpressError = require("./utils/ExpressError");
 
@@ -22,8 +23,18 @@ app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 
-const validateSpot = function (req, res, next) {
-  const { error } = spotSchema.validate(req.body);
+const validateAttraction = function (req, res, next) {
+  const { error } = attractionSchema.validate(req.body);
+  if (error) {
+    const msg = error.details.map((el) => el.message).join(",");
+    throw new ExpressError(msg, 400);
+  } else {
+    next();
+  }
+};
+
+const validateReview = function (req, res, next) {
+  const { error } = reviewSchema.validate(req.body);
   if (error) {
     const msg = error.details.map((el) => el.message).join(",");
     throw new ExpressError(msg, 400);
@@ -33,9 +44,7 @@ const validateSpot = function (req, res, next) {
 };
 
 app.get("/", (req, res) => {
-  res.send(
-    "Home page, jisko thoda sa edit kiya hai aur usme ye nayi line daali hai"
-  );
+  res.render("home", { pageTitle: "DiscoveryDen Home" });
 });
 
 app.get("/attractions", async (req, res) => {
@@ -61,10 +70,10 @@ app.get(
   "/attractions/:id",
   catchAsync(async (req, res) => {
     const { id } = req.params;
-    const site = await Attraction.findById(id);
+    const attraction = await Attraction.findById(id).populate("reviews");
     res.render("attractions/details", {
-      site,
-      pageTitle: `Details of ${site.name}`,
+      attraction,
+      pageTitle: `Details of ${attraction.name}`,
     });
   })
 );
@@ -73,32 +82,32 @@ app.get(
   "/attractions/:id/edit",
   catchAsync(async (req, res) => {
     const { id } = req.params;
-    const site = await Attraction.findById(id);
+    const attraction = await Attraction.findById(id);
     res.render("attractions/edit", {
-      site,
-      pageTitle: `Edit ${site.name}`,
+      attraction,
+      pageTitle: `Edit ${attraction.name}`,
     });
   })
 );
 
 app.post(
   "/attractions",
-  validateSpot,
+  validateAttraction,
   catchAsync(async (req, res) => {
-    const { newSite } = req.body;
-    const spot = new Attraction(newSite);
-    await spot.save();
-    res.redirect(`/attractions/${spot._id}`);
+    const { newAttraction } = req.body;
+    const attraction = new Attraction(newAttraction);
+    await attraction.save();
+    res.redirect(`/attractions/${attraction._id}`);
   })
 );
 
 app.put(
   "/attractions/:id",
-  validateSpot,
+  validateAttraction,
   catchAsync(async (req, res) => {
     const { id } = req.params;
-    const { newSite } = req.body;
-    await Attraction.findByIdAndUpdate(id, newSite);
+    const { newAttraction } = req.body;
+    await Attraction.findByIdAndUpdate(id, newAttraction);
     res.redirect(`/attractions/${id}`);
   })
 );
@@ -109,6 +118,30 @@ app.delete(
     const { id } = req.params;
     await Attraction.findByIdAndDelete(id);
     res.redirect("/attractions");
+  })
+);
+
+app.post(
+  "/attractions/:id/reviews",
+  validateReview,
+  catchAsync(async (req, res) => {
+    const { id } = req.params;
+    const newReview = new Review(req.body.newReview);
+    const attraction = await Attraction.findById(id);
+    attraction.reviews.push(newReview);
+    await newReview.save();
+    await attraction.save();
+    res.redirect(`/attractions/${attraction._id}`);
+  })
+);
+
+app.delete(
+  "/attractions/:id/reviews/:reviewId",
+  catchAsync(async (req, res) => {
+    const { id, reviewId } = req.params;
+    await Attraction.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
+    await Review.findByIdAndDelete(reviewId);
+    res.redirect(`/attractions/${id}`);
   })
 );
 

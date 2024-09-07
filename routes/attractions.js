@@ -1,9 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const ExpressError = require("../utils/ExpressError");
-const Attraction = require("../models/attractions");
+const Attraction = require("../models/attraction.js");
 const catchAsync = require("../utils/catchAsync");
 const { attractionSchema } = require("../schemas.js");
+const { isLoggedIn } = require("../middleware.js");
 
 const validateAttraction = function (req, res, next) {
   const { error } = attractionSchema.validate(req.body);
@@ -23,7 +24,7 @@ router.get("/", async (req, res) => {
   });
 });
 
-router.get("/new", (req, res) => {
+router.get("/new", isLoggedIn, (req, res) => {
   res.render("attractions/new", { pageTitle: "Create New Spot" });
 });
 
@@ -63,6 +64,7 @@ router.get(
 
 router.post(
   "/",
+  isLoggedIn,
   validateAttraction,
   catchAsync(async (req, res) => {
     const { newAttraction } = req.body;

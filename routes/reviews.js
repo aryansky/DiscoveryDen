@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router({ mergeParams: true });
-const Review = require("../models/reviews.js");
+const Review = require("../models/review.js");
 const ExpressError = require("../utils/ExpressError");
-const Attraction = require("../models/attractions");
+const Attraction = require("../models/attraction.js");
 const catchAsync = require("../utils/catchAsync");
 const { reviewSchema } = require("../schemas.js");
 

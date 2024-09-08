@@ -7,7 +7,7 @@ mongoose
   .then(() => console.log("------- Mongoose Connected -------"))
   .catch((error) => handleError(error));
 
-const Attraction = require("../models/attractions");
+const Attraction = require("../models/attraction");
 
 const sample = (arr) => arr[Math.floor(Math.random() * arr.length)];
 
@@ -16,9 +16,11 @@ const seedDB = async () => {
   for (let i = 0; i < 50; i++) {
     const rndm = Math.floor(Math.random() * 3551);
     const location = new Attraction({
+      author: "66dc327021cb7570464dec28",
       location: indianCities[rndm].name,
       name: `${sample(descriptors)} ${sample(places)}`,
-      image: "https://picsum.photos/700/400",
+      image:
+        "https://static.vecteezy.com/system/resources/previews/036/226/872/non_2x/ai-generated-nature-landscapes-background-free-photo.jpg",
       description:
         "Lorem ipsum dolor sit amet consectetur adipisicing elit. Porro eaque dolor praesentium, tempora facere enim sapiente, vero blanditiis voluptatum aperiam excepturi debitis vitae veritatis perferendis, illum minima rerum placeat fuga.",
     });

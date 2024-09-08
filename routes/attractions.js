@@ -1,20 +1,12 @@
 const express = require("express");
 const router = express.Router();
-const ExpressError = require("../utils/ExpressError");
 const Attraction = require("../models/attraction.js");
 const catchAsync = require("../utils/catchAsync");
-const { attractionSchema } = require("../schemas.js");
-const { isLoggedIn } = require("../middleware.js");
-
-const validateAttraction = function (req, res, next) {
-  const { error } = attractionSchema.validate(req.body);
-  if (error) {
-    const msg = error.details.map((el) => el.message).join(",");
-    throw new ExpressError(msg, 400);
-  } else {
-    next();
-  }
-};
+const {
+  isLoggedIn,
+  isAuthor,
+  validateAttraction,
+} = require("../middleware.js");
 
 router.get("/", async (req, res) => {
   const attractions = await Attraction.find({});
@@ -32,7 +24,9 @@ router.get(
   "/:id",
   catchAsync(async (req, res) => {
     const { id } = req.params;
-    const attraction = await Attraction.findById(id).populate("reviews");
+    const attraction = await Attraction.findById(id)
+      .populate({ path: "reviews", populate: { path: "author" } })
+      .populate("author");
     if (!attraction) {
       req.flash("error", "We could not find that attraction!");
       res.redirect("/attractions");
@@ -47,6 +41,8 @@ router.get(
 
 router.get(
   "/:id/edit",
+  isLoggedIn,
+  catchAsync(isAuthor),
   catchAsync(async (req, res) => {
     const { id } = req.params;
     const attraction = await Attraction.findById(id);
@@ -69,6 +65,7 @@ router.post(
   catchAsync(async (req, res) => {
     const { newAttraction } = req.body;
     const attraction = new Attraction(newAttraction);
+    attraction.author = req.user._id;
     await attraction.save();
     req.flash("success", "Created a new attration!");
     res.redirect(`/attractions/${attraction._id}`);
@@ -77,7 +74,9 @@ router.post(
 
 router.put(
   "/:id",
+  isLoggedIn,
   validateAttraction,
+  catchAsync(isAuthor),
   catchAsync(async (req, res) => {
     const { id } = req.params;
     const { newAttraction } = req.body;
@@ -89,6 +88,8 @@ router.put(
 
 router.delete(
   "/:id",
+  isLoggedIn,
+  catchAsync(isAuthor),
   catchAsync(async (req, res) => {
     const { id } = req.params;
     const attraction = await Attraction.findByIdAndDelete(id);

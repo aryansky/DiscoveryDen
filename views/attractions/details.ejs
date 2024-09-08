@@ -7,45 +7,32 @@
         src="<%= attraction.image %>"
         class="card-img-top img-fluid"
         alt="..."
-        style="max-width: 636px"
       />
       <div class="card-body">
         <h5 class="card-title"><%= attraction.name %></h5>
         <p class="card-text"><%= attraction.description %></p>
       </div>
       <ul class="list-group list-group-flush">
-        <li class="list-group-item"><%= attraction.location %></li>
-        <li class="list-group-item p-0">
-          <div class="container-fluid">
-            <div class="row">
-              <div class="col-6 d-grid p-0">
-                <a href="/attractions" class="btn btn-info rounded-0"
-                  >Go Back</a
-                >
-              </div>
-              <div class="col-3 d-grid p-0">
-                <a
-                  href="/attractions/<%= attraction._id %>/edit"
-                  class="btn btn-warning rounded-0"
-                  >Edit Spot</a
-                >
-              </div>
-              <div class="col-3 d-grid p-0">
-                <form
-                  action="/attractions/<%= attraction._id %>?_method=DELETE"
-                  method="POST"
-                  class="d-grid"
-                >
-                  <button class="btn btn-danger rounded-0">Delete</button>
-                </form>
-              </div>
-            </div>
-          </div>
-        </li>
+        <li class="list-group-item text-secondary-emphasis">Location: <i><%= attraction.location %></i></li>
       </ul>
+      <div class="card-footer">
+        Submitted by, <%= attraction.author.username %>
+      </div>
+      <div class="card-footer d-flex">
+        <a href="/attractions" class="btn btn-info">Go Back</a>
+        <% if (currentUser && attraction.author.equals(currentUser._id)) { %>
+          <div class="ms-auto">
+            <a href="/attractions/<%= attraction._id %>/edit" class="btn btn-warning">Edit Spot</a>
+            <form action="/attractions/<%= attraction._id %>?_method=DELETE" method="POST" class="d-inline">
+              <button class="btn btn-danger">Delete</button>
+            </form>
+          </div>
+          <% } %>
+      </div>
     </div>
   </div>
   <div class="col-6">
+    <% if (currentUser) { %>
     <h2>Leave a review</h2>
     <form
       action="/attractions/<%= attraction._id %>/reviews"
@@ -76,13 +63,24 @@
       </div>
       <button class="btn btn-success">Add review</button>
     </form>
+    <% } else { %>
+      <h5>To leave a review, you must be signed in!</h5>
+      <% } %>
+      <hr>
+      <h4>All Reviews:</h4>
       <% for (let review of attraction.reviews) {%>
       <div class="card mb-2">
+        <div class="card-header d-flex">
+          <h5 class="card-title d-inline mb-1 me-auto"><%= review.author.username %></h5>
+          <p class="m-0">Rating: <%= review.rating %> stars</p>
+        </div>
         <div class="card-body">
-          <h5 class="card-title d-flex justify-content-space-between">Rating: <%= review.rating %> Stars<form class="d-inline ms-auto" action="/attractions/<%= attraction._id %>/reviews/<%= review._id %>?_method=DELETE" method="POST">
-            <button class="btn btn-danger btn-sm">Delete</button>
-          </form></h5>
           <p class="card-text"><%= review.body %></p>
+          <% if (currentUser && review.author.equals(currentUser._id)) { %>
+          <form class="d-inline ms-auto" action="/attractions/<%= attraction._id %>/reviews/<%= review._id %>?_method=DELETE" method="POST">
+            <button class="btn btn-danger btn-sm">Delete</button>
+          </form>
+          <% } %>
         </div>
       </div>
       <% } %>

@@ -17,6 +17,10 @@ const attractionSchema = new Schema({
   location: {
     type: String,
   },
+  author: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+  },
   reviews: [
     {
       type: Schema.Types.ObjectId,

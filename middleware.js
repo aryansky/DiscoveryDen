@@ -13,8 +13,11 @@ module.exports.isLoggedIn = (req, res, next) => {
 };
 
 module.exports.storeReturnTo = (req, res, next) => {
-  if (req.session.returnTo) res.locals.returnTo = req.session.returnTo;
-  else res.locals.returnTo = "/attractions";
+  if (req.session.returnTo) {
+    res.locals.returnTo = req.session.returnTo;
+  } else {
+    res.locals.returnTo = "/attractions";
+  }
   next();
 };
 

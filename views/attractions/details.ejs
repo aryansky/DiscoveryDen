@@ -1,4 +1,5 @@
 <%- layout("layouts/boilerplate") %>
+<link rel="stylesheet" href="/stylesheets/stars.css">
 
 <div class="row">
   <div class="col-6">
@@ -40,17 +41,20 @@
       class="needs-validation mb-3"
       novalidate
     >
-      <div class="mb-3">
-        <label for="rating" class="form-label">Rating</label>
-        <input
-          type="range"
-          name="newReview[rating]"
-          id="rating"
-          min="1"
-          max="5"
-          class="form-range"
-        />
-      </div>
+    <fieldset class="starability-basic">
+      <legend></legend>
+      <input type="radio" id="first-rate1" name="review[rating]" value="1" checked />
+      <label for="first-rate1" title="Terrible">1 star</label>
+      <input type="radio" id="first-rate2" name="review[rating]" value="2" />
+      <label for="first-rate2" title="Not good">2 stars</label>
+      <input type="radio" id="first-rate3" name="review[rating]" value="3" />
+      <label for="first-rate3" title="Average">3 stars</label>
+      <input type="radio" id="first-rate4" name="review[rating]" value="4" />
+      <label for="first-rate4" title="Very good">4 stars</label>
+      <input type="radio" id="first-rate5" name="review[rating]" value="5" />
+      <label for="first-rate5" title="Amazing">5 stars</label>
+    </fieldset>
+      
       <div class="mb-3">
         <label for="body" class="form-label">Review</label>
         <textarea
@@ -71,8 +75,10 @@
       <% for (let review of attraction.reviews) {%>
       <div class="card mb-2">
         <div class="card-header d-flex">
-          <h5 class="card-title d-inline mb-1 me-auto"><%= review.author.username %></h5>
-          <p class="m-0">Rating: <%= review.rating %> stars</p>
+          <h5 class="card-title d-inline mt-1 me-3"><%= review.author.username %></h5>
+          <p class="m-0 starability-result" data-rating="<%= review.rating %>">
+            Rated: <%= review.rating %> stars
+          </p> 
         </div>
         <div class="card-body">
           <p class="card-text"><%= review.body %></p>

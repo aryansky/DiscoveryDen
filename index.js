@@ -56,13 +56,10 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get("/fakeUser", (req, res) => {
-  // code
-});
-
 app.get("/", (req, res) => {
   res.render("home", { pageTitle: "DiscoveryDen Home" });
 });
+
 app.use("/", userRoutes);
 app.use("/attractions", attractionRoutes);
 app.use("/attractions/:id/reviews", reviewRoutes);

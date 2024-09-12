@@ -8,19 +8,25 @@ mongoose
   .catch((error) => handleError(error));
 
 const Attraction = require("../models/attraction");
+const Review = require("../models/review");
 
 const sample = (arr) => arr[Math.floor(Math.random() * arr.length)];
 
 const seedDB = async () => {
   await Attraction.deleteMany({});
+  await Review.deleteMany({});
   for (let i = 0; i < 50; i++) {
     const rndm = Math.floor(Math.random() * 3551);
     const location = new Attraction({
       author: "66dc327021cb7570464dec28",
       location: indianCities[rndm].name,
       name: `${sample(descriptors)} ${sample(places)}`,
-      image:
-        "https://static.vecteezy.com/system/resources/previews/036/226/872/non_2x/ai-generated-nature-landscapes-background-free-photo.jpg",
+      images: [
+        {
+          url: "https://static.vecteezy.com/system/resources/previews/036/226/872/non_2x/ai-generated-nature-landscapes-background-free-photo.jpg",
+          filename: "Yay",
+        },
+      ],
       description:
         "Lorem ipsum dolor sit amet consectetur adipisicing elit. Porro eaque dolor praesentium, tempora facere enim sapiente, vero blanditiis voluptatum aperiam excepturi debitis vitae veritatis perferendis, illum minima rerum placeat fuga.",
     });

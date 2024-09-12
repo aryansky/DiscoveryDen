@@ -9,6 +9,7 @@
       action="/attractions"
       class="needs-validation"
       novalidate
+      enctype="multipart/form-data"
     >
       <div class="mb-3">
         <label for="newAttractionName" class="form-label">Name</label>
@@ -49,14 +50,13 @@
         <div class="valid-feedback">Looks good!</div>
       </div>
       <div class="mb-3">
-        <label for="newAttractionImage" class="form-label">Image Url</label>
+        <label for="formFileMultiple" class="form-label">Image Upload</label>
         <input
-          type="text"
-          id="newAttractionImage"
-          name="newAttraction[image]"
-          placeholder="eg. https://cdn.pixabay.com/photo/2024/05/26/10/15/bird-8788491_1280.jpg"
           class="form-control"
-          required
+          type="file"
+          name="image"
+          id="formFileMultiple"
+          multiple
         />
       </div>
       <div class="mb-3">

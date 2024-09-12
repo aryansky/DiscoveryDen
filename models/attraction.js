@@ -2,14 +2,19 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const Review = require("./review.js");
 
-const attractionSchema = new Schema({
+// https://res.cloudinary.com/detypqg62/image/upload/h_180/v1726127891/DiscoveryDen/cvulrvfjugd6qrzema0r.jpg
+
+const ImageSchema = new Schema({
+  url: String,
+  filename: String,
+});
+
+const AttractionSchema = new Schema({
   name: {
     type: String,
     required: true,
   },
-  image: {
-    type: String,
-  },
+  images: [ImageSchema],
   description: {
     type: String,
     default: ".....",
@@ -29,7 +34,11 @@ const attractionSchema = new Schema({
   ],
 });
 
-attractionSchema.post("findOneAndDelete", async (doc) => {
+ImageSchema.virtual("thumbnail").get(function () {
+  return this.url.replace("/upload", "/upload/h_180");
+});
+
+AttractionSchema.post("findOneAndDelete", async (doc) => {
   if (doc) {
     await Review.deleteMany({
       _id: {
@@ -39,4 +48,4 @@ attractionSchema.post("findOneAndDelete", async (doc) => {
   }
 });
 
-module.exports = mongoose.model("Attraction", attractionSchema);
+module.exports = mongoose.model("Attraction", AttractionSchema);

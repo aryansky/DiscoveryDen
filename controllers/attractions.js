@@ -1,5 +1,6 @@
 const Attraction = require("../models/attraction.js");
 const catchAsync = require("../utils/catchAsync");
+const { cloudinary } = require("../cloudinary/index.js");
 
 module.exports.index = catchAsync(async (req, res) => {
   const attractions = await Attraction.find({});
@@ -47,6 +48,10 @@ module.exports.createAttraction = catchAsync(async (req, res) => {
   const { newAttraction } = req.body;
   const attraction = new Attraction(newAttraction);
   attraction.author = req.user._id;
+  attraction.images = req.files.map((f) => ({
+    url: f.path,
+    filename: f.filename,
+  }));
   await attraction.save();
   req.flash("success", "Created a new attration!");
   res.redirect(`/attractions/${attraction._id}`);
@@ -55,7 +60,21 @@ module.exports.createAttraction = catchAsync(async (req, res) => {
 module.exports.updateAttraction = catchAsync(async (req, res) => {
   const { id } = req.params;
   const { newAttraction } = req.body;
-  await Attraction.findByIdAndUpdate(id, newAttraction);
+  const attraction = await Attraction.findByIdAndUpdate(id, newAttraction);
+  const imgs = req.files.map((f) => ({
+    url: f.path,
+    filename: f.filename,
+  }));
+  attraction.images.push(...imgs);
+  if (req.body.deleteImages && req.body.deleteImages.length > 0) {
+    for (let filename of req.body.deleteImages) {
+      cloudinary.uploader.destroy(filename);
+    }
+    await attraction.updateOne({
+      $pull: { images: { filename: { $in: req.body.deleteImages } } },
+    });
+  }
+  await attraction.save();
   req.flash("success", "All changes saved!");
   res.redirect(`/attractions/${id}`);
 });

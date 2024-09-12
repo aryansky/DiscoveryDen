@@ -9,33 +9,52 @@ const ImageSchema = new Schema({
   filename: String,
 });
 
-const AttractionSchema = new Schema({
-  name: {
-    type: String,
-    required: true,
-  },
-  images: [ImageSchema],
-  description: {
-    type: String,
-    default: ".....",
-  },
-  location: {
-    type: String,
-  },
-  author: {
-    type: Schema.Types.ObjectId,
-    ref: "User",
-  },
-  reviews: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "Review",
+const AttractionSchema = new Schema(
+  {
+    name: {
+      type: String,
+      required: true,
     },
-  ],
-});
+    images: [ImageSchema],
+    description: {
+      type: String,
+      default: ".....",
+    },
+    geometry: {
+      type: {
+        type: String,
+        enum: ["Point"],
+        required: true,
+      },
+      coordinates: {
+        type: [Number],
+        required: true,
+      },
+    },
+    location: {
+      type: String,
+    },
+    author: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    },
+    reviews: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Review",
+      },
+    ],
+  },
+  { toJSON: { virtuals: true } }
+);
 
 ImageSchema.virtual("thumbnail").get(function () {
   return this.url.replace("/upload", "/upload/h_180");
+});
+
+AttractionSchema.virtual("properties.popUpMarkup").get(function () {
+  const htmlText = `<a href="/attractions/${this._id}">${this.name}</a><p>${this.location}</p>`;
+  return htmlText;
 });
 
 AttractionSchema.post("findOneAndDelete", async (doc) => {

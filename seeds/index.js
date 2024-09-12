@@ -15,7 +15,7 @@ const sample = (arr) => arr[Math.floor(Math.random() * arr.length)];
 const seedDB = async () => {
   await Attraction.deleteMany({});
   await Review.deleteMany({});
-  for (let i = 0; i < 50; i++) {
+  for (let i = 0; i < 300; i++) {
     const rndm = Math.floor(Math.random() * 3551);
     const location = new Attraction({
       author: "66dc327021cb7570464dec28",
@@ -27,6 +27,10 @@ const seedDB = async () => {
           filename: "Yay",
         },
       ],
+      geometry: {
+        type: "Point",
+        coordinates: [indianCities[rndm].lng, indianCities[rndm].lat],
+      },
       description:
         "Lorem ipsum dolor sit amet consectetur adipisicing elit. Porro eaque dolor praesentium, tempora facere enim sapiente, vero blanditiis voluptatum aperiam excepturi debitis vitae veritatis perferendis, illum minima rerum placeat fuga.",
     });

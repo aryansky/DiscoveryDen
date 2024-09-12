@@ -1,6 +1,8 @@
 const Attraction = require("../models/attraction.js");
 const catchAsync = require("../utils/catchAsync");
 const { cloudinary } = require("../cloudinary/index.js");
+const maptilerClient = require("@maptiler/client");
+maptilerClient.config.apiKey = process.env.MAPTILER_API_KEY;
 
 module.exports.index = catchAsync(async (req, res) => {
   const attractions = await Attraction.find({});
@@ -46,7 +48,14 @@ module.exports.editPage = catchAsync(async (req, res) => {
 
 module.exports.createAttraction = catchAsync(async (req, res) => {
   const { newAttraction } = req.body;
+  //GEO
+  const geoData = await maptilerClient.geocoding.forward(
+    newAttraction.location,
+    { limit: 1 }
+  );
   const attraction = new Attraction(newAttraction);
+  //GEO
+  attraction.geometry = geoData.features[0].geometry;
   attraction.author = req.user._id;
   attraction.images = req.files.map((f) => ({
     url: f.path,

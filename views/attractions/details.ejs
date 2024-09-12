@@ -2,7 +2,7 @@
 <link rel="stylesheet" href="/stylesheets/stars.css">
 
 <div class="row">
-  <div class="col-6">
+  <div class="col-md-6">
     <div class="card mb-3">
       <div id="attractionsCarousel" class="carousel slide">
         <div class="carousel-inner">
@@ -46,7 +46,8 @@
       </div>
     </div>
   </div>
-  <div class="col-6">
+  <div class="col-md-6">
+    <div id="map"></div>
     <% if (currentUser) { %>
     <h2>Leave a review</h2>
     <form
@@ -107,3 +108,9 @@
     </ul>
   </div>
 </div>
+
+<script>
+  const maptilerApiKey = '<%- process.env.MAPTILER_API_KEY %>'
+  const attraction = <%- JSON.stringify(attraction) %>
+</script>
+<script src="/javascripts/detailsMap.js"></script>

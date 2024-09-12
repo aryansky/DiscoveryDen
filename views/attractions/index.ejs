@@ -1,5 +1,7 @@
 <%- layout("layouts/boilerplate") %>
 
+<div id="map" style="height: 500px"></div>
+
 <h1 class="display-3 mb-5 text-center">All Attractions</h1>
 
 <% for (let site of attractions) { %>
@@ -23,3 +25,9 @@
   </div>
 </div>
 <% } %>
+
+<script>
+  const maptilerApiKey = '<%- process.env.MAPTILER_API_KEY %>'
+  const attractions = {features: <%- JSON.stringify(attractions) %>}
+</script>
+<script src="/javascripts/clusterMap.js"></script>

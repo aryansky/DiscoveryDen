@@ -25,7 +25,7 @@ const dbUrl = process.env.DB_URL || "mongodb://127.0.0.1:27017/discovery-den";
 mongoose
   .connect(dbUrl)
   .then(() => console.log("------- Mongoose Connected -------"))
-  .catch((error) => handleError(error));
+  .catch((error) => console.log(error));
 
 const app = express();
 

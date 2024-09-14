@@ -69,7 +69,12 @@ module.exports.createAttraction = catchAsync(async (req, res) => {
 module.exports.updateAttraction = catchAsync(async (req, res) => {
   const { id } = req.params;
   const { newAttraction } = req.body;
+  const geoData = await maptilerClient.geocoding.forward(
+    newAttraction.location,
+    { limit: 1 }
+  );
   const attraction = await Attraction.findByIdAndUpdate(id, newAttraction);
+  attraction.geometry = geoData.features[0].geometry;
   const imgs = req.files.map((f) => ({
     url: f.path,
     filename: f.filename,
@@ -91,6 +96,9 @@ module.exports.updateAttraction = catchAsync(async (req, res) => {
 module.exports.deleteAttraction = catchAsync(async (req, res) => {
   const { id } = req.params;
   const attraction = await Attraction.findByIdAndDelete(id);
+  for (let image of attraction.images) {
+    cloudinary.uploader.destroy(image.filename);
+  }
   req.flash("success", `Deleted the ${attraction.name} attraction`);
   res.redirect("/attractions");
 });

@@ -1,0 +1,60 @@
+/* html {
+  font-size: 90%;
+} */
+
+#clusterMap {
+  width: 100%;
+  height: 500px;
+  border-bottom: 0.15rem solid rgba(0, 0, 0, 0.3);
+}
+
+#headerIndex {
+  font-size: 3rem;
+  font-variant: small-caps;
+}
+
+#map {
+  width: 100%;
+  height: 300px;
+}
+
+/* .navbar {
+  color: #e6e8e6;
+} */
+
+/* .footer {
+  background-color: #333533;
+} */
+
+.nav-link {
+  font-weight: 600;
+  color: #e6e8e6;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border-radius: 3px;
+  margin-right: 0.5em;
+}
+
+.nav-link:hover,
+.nav-link:active,
+.navbar-nav .nav-link.show {
+  color: #e6e8e6;
+  background-color: #006494;
+}
+
+.dropdown-item:hover {
+  background-color: #e1e1e1;
+}
+
+.rightUl .nav-link {
+  margin-right: 0;
+}
+
+@media (min-width: 1000px) {
+  .indexCardImage {
+    width: 415px;
+    height: 250px;
+    object-fit: cover;
+    object-position: center;
+  }
+}

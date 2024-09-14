@@ -16,6 +16,8 @@ const userRoutes = require("./routes/users");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const User = require("./models/user.js");
+const mongoSanitize = require("express-mongo-sanitize");
+const helmet = require("helmet");
 
 mongoose
   .connect("mongodb://127.0.0.1:27017/discovery-den")
@@ -32,8 +34,54 @@ app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 app.use(express.static("public"));
+app.use(mongoSanitize());
+app.use(helmet());
+
+const scriptSrcUrls = [
+  "https://stackpath.bootstrapcdn.com/",
+  "https://kit.fontawesome.com/",
+  "https://cdnjs.cloudflare.com/",
+  "https://cdn.jsdelivr.net",
+  "https://cdn.maptiler.com/", // add this
+];
+const styleSrcUrls = [
+  "https://kit-free.fontawesome.com/",
+  "https://stackpath.bootstrapcdn.com/",
+  "https://fonts.googleapis.com/",
+  "https://use.fontawesome.com/",
+  "https://cdn.jsdelivr.net",
+  "https://cdn.maptiler.com/", // add this
+];
+const connectSrcUrls = [
+  "https://api.maptiler.com/", // add this
+];
+const fontSrcUrls = [];
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: [],
+      connectSrc: ["'self'", ...connectSrcUrls],
+      scriptSrc: ["'unsafe-inline'", "'self'", ...scriptSrcUrls],
+      styleSrc: ["'self'", "'unsafe-inline'", ...styleSrcUrls],
+      workerSrc: ["'self'", "blob:"],
+      objectSrc: [],
+      imgSrc: [
+        "'self'",
+        "blob:",
+        "data:",
+        "https://res.cloudinary.com/detypqg62/",
+        "https://images.unsplash.com/",
+        "https://plus.unsplash.com/",
+        "https://i.postimg.cc/",
+        "https://api.maptiler.com/",
+      ],
+      fontSrc: ["'self'", ...fontSrcUrls],
+    },
+  })
+);
 
 const sessionConfig = {
+  name: "session",
   secret: "topSECRET",
   resave: false,
   saveUninitialized: true,

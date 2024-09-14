@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const indianCities = require("./indianCities.json");
-const { descriptors, places } = require("./randomNames.js");
+const { descriptors, places, images } = require("./randomNames.js");
 
 mongoose
   .connect("mongodb://127.0.0.1:27017/discovery-den")
@@ -23,8 +23,8 @@ const seedDB = async () => {
       name: `${sample(descriptors)} ${sample(places)}`,
       images: [
         {
-          url: "https://static.vecteezy.com/system/resources/previews/036/226/872/non_2x/ai-generated-nature-landscapes-background-free-photo.jpg",
-          filename: "Yay",
+          url: sample(images),
+          filename: "sampleFile",
         },
       ],
       geometry: {

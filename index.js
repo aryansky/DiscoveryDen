@@ -7,6 +7,7 @@ const path = require("path");
 const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
 const session = require("express-session");
+const MongoStore = require("connect-mongo");
 const mongoose = require("mongoose");
 const ExpressError = require("./utils/ExpressError");
 const flash = require("connect-flash");
@@ -19,8 +20,10 @@ const User = require("./models/user.js");
 const mongoSanitize = require("express-mongo-sanitize");
 const helmet = require("helmet");
 
+const dbUrl = process.env.DB_URL || "mongodb://127.0.0.1:27017/discovery-den";
+// const dbUrl = "mongodb://127.0.0.1:27017/discovery-den";
 mongoose
-  .connect("mongodb://127.0.0.1:27017/discovery-den")
+  .connect(dbUrl)
   .then(() => console.log("------- Mongoose Connected -------"))
   .catch((error) => handleError(error));
 
@@ -80,9 +83,20 @@ app.use(
   })
 );
 
+const secret = process.env.SECRET;
+
+const store = MongoStore.create({
+  mongoUrl: dbUrl,
+  touchAfter: 24 * 60 * 60,
+  crypto: {
+    secret,
+  },
+});
+
 const sessionConfig = {
   name: "session",
-  secret: "topSECRET",
+  secret,
+  store,
   resave: false,
   saveUninitialized: true,
   cookie: {
@@ -126,6 +140,7 @@ app.use((err, req, res, next) => {
   res.status(statusCode).render("error", { err, pageTitle: "Error Page" });
 });
 
-app.listen(3000, () => {
-  console.log("---------- Server started on port 3000 ----------");
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+  console.log(`---------- Serving on port ${port} ----------`);
 });

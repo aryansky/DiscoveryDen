@@ -1,6 +1,6 @@
-DiscoveryDen
+#DiscoveryDen
 
-Deployed on render: https://discoveryden.onrender.com
+Deployed on render: https://discoveryden.onrender.com (It might take a min to load and if there are any 500 server codes then please refresh the page after 1 min)
 
 Hey everyone,
 DiscoveryDen is a basic Full stack project that I have designed while learning the basics of web development.
